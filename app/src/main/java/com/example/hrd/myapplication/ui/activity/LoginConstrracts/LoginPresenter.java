@@ -1,25 +1,30 @@
 package com.example.hrd.myapplication.ui.activity.LoginConstrracts;
 
+import com.example.hrd.myapplication.bean.StoreBean;
+import com.example.hrd.myapplication.http.Webservice;
+
+import java.util.List;
+
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 public class LoginPresenter extends LoginConstracts.LoginPresenter{
     @Override
     public void Login(String url) {
-        mModel.Login(url).subscribe(new Observer<String>() {
+        mModel.Login(url).subscribe(new Observer<Webservice<List<StoreBean>>>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(String s) {
-                mView.updateData("");
+            public void onNext(Webservice<List<StoreBean>> listWebservice) {
+                mView.updateData(listWebservice.getMessage());
             }
 
             @Override
             public void onError(Throwable e) {
-                mView.showError("请输入正确的服务器地址!");
+                mView.showError(e.getMessage());
             }
 
             @Override

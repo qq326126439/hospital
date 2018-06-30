@@ -19,7 +19,7 @@ public class EquipmentAdapter extends BaseQuickAdapter<EquipmentBean,BaseViewHol
 
     @Override
     protected void convert(BaseViewHolder helper, EquipmentBean item) {
-        helper.setText(R.id.EquipId,item.getEquipmentcode());
+        helper.setText(R.id.EquipId,item.getEquipmentnum());
         helper.setText(R.id.EquipName,item.getEquipmentname());
         helper.setText(R.id.model,item.getModel());
         helper.setText(R.id.Department,item.getDeptname());

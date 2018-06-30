@@ -59,7 +59,7 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
     @Override
     protected void viewCreate(Bundle savedInstanceState) {
         initView();
-        mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"ALL");
+        mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"ALL","");
     }
 
     private void initView() {
@@ -72,6 +72,7 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
                 pop();
             }
         });
+
         RxToolbar.itemClicks(toolbar)
                 .compose(RxthrottleFirst.<MenuItem>applyThrottleFirst())
                 .compose(rxPermissions.ensure(Manifest.permission.CAMERA))
@@ -81,14 +82,14 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
 
                         if (aBoolean){
                             Intent intent=new Intent(mContext,CaptureActivity.class);
-                            mActivity.startActivityForResult(intent,REQUEST_CODE);
+                            startActivityForResult(intent,REQUEST_CODE);
                         }else{
                             rxPermissions.requestEachCombined(Manifest.permission.CAMERA).subscribe(new Consumer<Permission>() {
                                 @Override
                                 public void accept(Permission permission) throws Exception {
                                     if (permission.granted){
                                         Intent intent=new Intent(mContext,CaptureActivity.class);
-                                        mActivity.startActivityForResult(intent,REQUEST_CODE);
+                                        startActivityForResult(intent,REQUEST_CODE);
                                     }else if(permission.shouldShowRequestPermissionRationale){
                                         Toast.makeText(mContext,"应用使用期间需要该权限,请允许",Toast.LENGTH_LONG).show();
                                     }else{
@@ -108,17 +109,17 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
             case R.id.never:
                 if(adapter!=null)
                     adapter.setNewData(null);
-                mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"INCOMPLETE");
+                mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"INCOMPLETE","");
                 break;
             case R.id.all:
                 if(adapter!=null)
                     adapter.setNewData(null);
-                mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"ALL");
+                mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"ALL","");
                 break;
             case R.id.already:
                 if(adapter!=null)
                     adapter.setNewData(null);
-                mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"FINISH");
+                mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"FINISH","");
                 break;
         }
     }
@@ -146,6 +147,21 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
     }
 
     @Override
+    public void GotoDetail(List<EquipmentBean> mlist) {
+        if(mlist!=null&&mlist.size()>0) {
+            EquipmentBean bean = mlist.get(0);
+            Bundle args = new Bundle();
+            args.putString(CommonUtil.Equip.DEPARTMENT, bean.getDeptname());
+            args.putString(CommonUtil.Equip.EQUIPID, bean.getEquipmentnum());
+            args.putString(CommonUtil.Equip.EQUIPNAME, bean.getEquipmentname());
+            args.putString(CommonUtil.Equip.MODEL, bean.getModel());
+            args.putString(CommonUtil.Equip.VALUE, bean.getValue());
+            args.putString(CommonUtil.Equip.STORENAME, bean.getStoragename());
+            start(PropertyFragment.newInstance(args));
+        }
+    }
+
+    @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
         Bundle args=new Bundle();
         args.putString(CommonUtil.Equip.DEPARTMENT,((EquipmentBean)adapter.getData().get(position)).getDeptname());
@@ -169,7 +185,7 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
             @Override
             public void accept(SearchViewQueryTextEvent searchViewQueryTextEvent) throws Exception {
                 if(searchViewQueryTextEvent.isSubmitted()){
-                    Toast.makeText(mContext,searchViewQueryTextEvent.queryText(),Toast.LENGTH_LONG).show();
+                    mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"SEARCH",searchViewQueryTextEvent.queryText().toString());
                 }
             }
         });
@@ -181,6 +197,8 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
         adapter=null;
         rxPermissions=null;
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -194,14 +212,13 @@ public class DetailFragment extends BaseFramgent<DetailPresenter,DetailModel> im
                             return;
                         }
                         if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
-                            String result = bundle.getString(CodeUtils.RESULT_STRING);
-                            Toast.makeText(mContext, "解析结果:" + result, Toast.LENGTH_LONG).show();
-                        } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                            Toast.makeText(mContext, "解析二维码失败", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext,bundle.getString(CodeUtils.RESULT_STRING),Toast.LENGTH_LONG).show();
+//                            mPresenter.getList(getArguments().getString(CommonUtil.StoreData.STORECODE),getArguments().getString(CommonUtil.Department.DEPARTMENTCODE),"SEARCH",bundle.getString(CodeUtils.RESULT_STRING).toString());
                         }
                     }
                     break;
             }
         }
     }
+
 }

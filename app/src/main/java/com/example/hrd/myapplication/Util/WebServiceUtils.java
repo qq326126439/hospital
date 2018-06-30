@@ -5,6 +5,8 @@ import android.os.Message;
 import android.support.v4.util.SimpleArrayMap;
 
 import com.example.hrd.myapplication.Constracts.NetworkConstracts;
+import com.example.hrd.myapplication.WebService.WebServiceUtil;
+import com.example.hrd.myapplication.bean.TestBean;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -93,6 +95,7 @@ public class WebServiceUtils {
             }
 
         };
+
 
         // 5.提交一个子线程到线程池并在此线种内调用WebService
         if (threadPool == null || threadPool.isShutdown())

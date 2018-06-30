@@ -67,13 +67,13 @@ public class MainFragment extends BaseFramgent<MainPresenter,MainModel> implemen
     }
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_null;
+        return R.layout.activity_main;
     }
 
     @Override
     protected void viewCreate(Bundle savedInstanceState) {
 //        initView();
-          start(StoreFragment.newInstance());
+//          start(StoreFragment.newInstance());
 //        TestWebService();
 //        CheckUpdate();
     }

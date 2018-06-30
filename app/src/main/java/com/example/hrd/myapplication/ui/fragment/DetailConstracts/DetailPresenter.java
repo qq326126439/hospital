@@ -6,6 +6,8 @@ import com.example.hrd.myapplication.http.BaseObserve;
 import java.util.List;
 
 public class DetailPresenter extends DetailConstracts.DetailPresenter{
+
+
     @Override
     public void onStart() {
 
@@ -13,8 +15,8 @@ public class DetailPresenter extends DetailConstracts.DetailPresenter{
 
 
     @Override
-    public void getList(String StoreId, String DepartmentId,String type) {
-        mModel.getList(StoreId,DepartmentId,type).subscribe(new BaseObserve<List<EquipmentBean>>() {
+    public void getList(String StoreId, String DepartmentId,String type,String Search) {
+        mModel.getList(StoreId,DepartmentId,type,Search,"0").subscribe(new BaseObserve<List<EquipmentBean>>() {
             @Override
             public void onSuccess(String msg) {
 
@@ -30,5 +32,26 @@ public class DetailPresenter extends DetailConstracts.DetailPresenter{
                 mView.showError(s);
             }
         });
+    }
+
+    @Override
+    public void Search(String StoreId, String DepartmentId, String type, String Search) {
+        mModel.getList(StoreId,DepartmentId,type,Search,"0").subscribe(new BaseObserve<List<EquipmentBean>>() {
+            @Override
+            public void onSuccess(String msg) {
+
+            }
+
+            @Override
+            public void onSuccess(List<EquipmentBean> t) {
+                mView.GotoDetail(t);
+            }
+
+            @Override
+            public void onFailure(String s) {
+                mView.showError(s);
+            }
+        });
+
     }
 }

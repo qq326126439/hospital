@@ -1,8 +1,12 @@
 package com.example.hrd.myapplication.ui.activity.LoginConstrracts;
 
+import com.example.hrd.myapplication.bean.StoreBean;
+import com.example.hrd.myapplication.http.Webservice;
 import com.example.hrd.myapplication.mvp.BaseModel;
 import com.example.hrd.myapplication.mvp.BasePresenter;
 import com.example.hrd.myapplication.mvp.BaseView;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 
@@ -15,6 +19,6 @@ public interface LoginConstracts {
 
     }
      interface LoginModel extends BaseModel{
-         Observable<String> Login(String url);
+         Observable<Webservice<List<StoreBean>>> Login(String url);
     }
 }
